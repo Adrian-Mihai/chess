@@ -2,6 +2,7 @@ require 'matrix'
 
 require_relative 'cell'
 require_relative 'board_index'
+require_relative 'validates_piece_move'
 
 require_relative 'pieces/base'
 require_relative 'pieces/king'
@@ -50,17 +51,14 @@ class Board
   def move_piece?(x, y)
     return false unless @selected_cell&.piece
 
-    return reset_piece_position unless in_board?(x, y)
-
     new_cell = @cells.find { |cell| cell.in_cell?(x, y) }
-    return false unless new_cell
 
-    new_cell.piece   = @selected_cell.piece
-    new_cell.piece.x = new_cell.x
-    new_cell.piece.y = new_cell.y
-    new_cell.piece.reset_z_order
-    return false if @selected_cell == new_cell
+    unless in_board?(x, y) && different_cells?(new_cell) && valid_move?(new_cell)
+      reset_piece_position
+      return false
+    end
 
+    add_piece_to(new_cell)
     @selected_cell.piece = nil
     true
   end
@@ -94,48 +92,31 @@ class Board
   end
 
   def cell_piece(row, col)
-    return cell_black_piece(row, col) if [0, 1].include?(row)
-    return cell_white_piece(row, col) if [6, 7].include?(row)
+    return unless [0, 1, 6, 7].include?(row)
 
-    nil
+    piece = case "#{row}:#{col}"
+            when '0:0', '0:7', '7:0', '7:7'
+              'Rook'
+            when '0:1', '0:6', '7:1', '7:6'
+              'Knight'
+            when '0:2', '0:5', '7:2', '7:5'
+              'Bishop'
+            when '0:3', '7:3'
+              'Queen'
+            when '0:4', '7:4'
+              'King'
+            else
+              'Pawn'
+            end
+    Pieces.const_get(piece).new(cell_x_pos(col),
+                                cell_y_pos(row),
+                                piece_color(row))
   end
 
-  def cell_black_piece(row, col)
-    return unless [0, 1].include?(row)
+  def piece_color(row)
+    return 'black' if [0, 1].include?(row)
 
-    case "#{row}:#{col}"
-    when '0:0', '0:7'
-      Pieces::Rook.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    when '0:1', '0:6'
-      Pieces::Knight.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    when '0:2', '0:5'
-      Pieces::Bishop.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    when '0:3'
-      Pieces::Queen.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    when '0:4'
-      Pieces::King.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    else
-      Pieces::Pawn.new(cell_x_pos(col), cell_y_pos(row), 'black')
-    end
-  end
-
-  def cell_white_piece(row, col)
-    return unless [6, 7].include?(row)
-
-    case "#{row}:#{col}"
-    when '7:0', '7:7'
-      Pieces::Rook.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    when '7:1', '7:6'
-      Pieces::Knight.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    when '7:2', '7:5'
-      Pieces::Bishop.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    when '7:3'
-      Pieces::Queen.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    when '7:4'
-      Pieces::King.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    else
-      Pieces::Pawn.new(cell_x_pos(col), cell_y_pos(row), 'white')
-    end
+    'white' if [6, 7].include?(row)
   end
 
   def in_board?(x, y)
@@ -144,11 +125,27 @@ class Board
   end
 
   def reset_piece_position
-    return false unless @selected_cell&.piece
+    return unless @selected_cell&.piece
 
     @selected_cell.piece.x = @selected_cell.x
     @selected_cell.piece.y = @selected_cell.y
     @selected_cell.piece.reset_z_order
-    false
+  end
+
+  def add_piece_to(cell)
+    return unless @selected_cell&.piece
+
+    cell.piece   = @selected_cell.piece
+    cell.piece.x = cell.x
+    cell.piece.y = cell.y
+    cell.piece.reset_z_order
+  end
+
+  def valid_move?(cell)
+    ValidatesPieceMove.valid_move?(current_cell: @selected_cell, new_cell: cell)
+  end
+
+  def different_cells?(cell)
+    @selected_cell != cell
   end
 end

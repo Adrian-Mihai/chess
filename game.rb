@@ -3,6 +3,7 @@
 require 'gosu'
 
 require_relative './src/board'
+require_relative './src/validates_piece_move'
 require_relative './src/player'
 
 class Chess < Gosu::Window
@@ -68,7 +69,8 @@ class Chess < Gosu::Window
   end
 
   def valid_piece?
-    @current_player.color == @board.selected_cell&.piece&.color
+    ValidatesPieceMove.valid_piece?(player: @current_player,
+                                    piece: @board.selected_cell&.piece)
   end
 
   def change_current_player
