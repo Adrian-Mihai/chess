@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class ValidatesPieceMove
   class << self
-    def valid_move?(current_cell:, new_cell:)
+    def valid?(current_cell:, new_cell:)
       return false if current_cell&.piece&.color == new_cell&.piece&.color
 
       true

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Pieces
   class Base
     attr_accessor :x, :y
     attr_reader :color
 
-    def initialize(x, y, color)
-      @x          = x
-      @y          = y
+    def initialize(pos_x, pos_y, color)
+      @x          = pos_x
+      @y          = pos_y
       @z          = 1
       @color      = color
       @image      = Gosu::Image.new("media/pieces/#{@color}/#{name}.png")

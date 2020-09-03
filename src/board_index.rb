@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BoardIndex
   VERTICAL_VALUE      = %w[8 7 6 5 4 3 2 1].freeze
   HORIZONTAL_VALUE    = %w[A B C D E F G H].freeze
