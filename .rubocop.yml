@@ -1,7 +1,7 @@
 Style/FrozenStringLiteralComment:
   Enabled: true
   Exclude:
-    - game.rb
+    - chess.rb
 
 Metrics/MethodLength:
   Exclude:

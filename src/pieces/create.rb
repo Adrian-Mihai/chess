@@ -3,7 +3,7 @@
 module Pieces
   class Create
     class << self
-      def piece(row, col)
+      def call(row, col)
         return unless [0, 1, 6, 7].include?(row)
 
         case "#{row}:#{col}"
