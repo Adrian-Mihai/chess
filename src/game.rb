@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'player'
-require_relative 'board'
-require_relative 'validates_piece'
+require_relative 'components/player'
+require_relative 'components/board'
+require_relative 'helpers/validates_pieces'
 
 class Game
   attr_reader :current_player, :board
@@ -71,12 +71,12 @@ class Game
   private
 
   def valid_piece?(piece)
-    ValidatesPiece.same_color?(player: @current_player, piece: piece)
+    ValidatesPieces.same_color?(player: @current_player, piece: piece)
   end
 
   def valid_move?(cell)
     different_cells?(cell) &&
-      ValidatesPiece.valid_move?(current_cell: @selected_cell, new_cell: cell)
+      ValidatesPieces.valid_move?(current_cell: @selected_cell, new_cell: cell)
   end
 
   def different_cells?(cell)

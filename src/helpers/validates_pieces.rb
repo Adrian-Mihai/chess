@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ValidatesPiece
+class ValidatesPieces
   class << self
     def valid_move?(current_cell:, new_cell:)
       return false if current_cell.nil? || new_cell.nil?
