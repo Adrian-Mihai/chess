@@ -5,6 +5,8 @@ require_relative 'components/board'
 require_relative 'helpers/validates_pieces'
 
 class Game
+  include ValidatesPieces
+
   attr_reader :current_player, :board
 
   OFFSET_SELECTED_PIECE = 25
@@ -61,9 +63,11 @@ class Game
   def move_piece?(pos_x, pos_y)
     return false unless @selected_cell&.piece
 
-    new_cell = @board.select_cell(pos_x, pos_y)
-    return false unless new_cell
-    return false unless valid_move?(new_cell)
+    cell = @board.select_cell(pos_x, pos_y)
+    return false unless cell
+    return false unless different_cells?(cell)
+    return false unless valid_move?(current_cell: @selected_cell,
+                                    new_cell: cell)
 
     true
   end
@@ -71,12 +75,7 @@ class Game
   private
 
   def valid_piece?(piece)
-    ValidatesPieces.same_color?(player: @current_player, piece: piece)
-  end
-
-  def valid_move?(cell)
-    different_cells?(cell) &&
-      ValidatesPieces.valid_move?(current_cell: @selected_cell, new_cell: cell)
+    same_color?(player: @current_player, piece: piece)
   end
 
   def different_cells?(cell)
