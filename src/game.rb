@@ -10,6 +10,8 @@ class Game
   attr_reader :current_player, :board
 
   OFFSET_SELECTED_PIECE = 25
+  MOVING_PIECE_ORDER    = 2
+  PIECE_ORDER           = 1
 
   def initialize
     @white_player   = Player.new('white')
@@ -30,7 +32,7 @@ class Game
     @selected_cell = nil
     cell = @board.select_cell(pos_x, pos_y)
     @selected_cell = cell if valid_piece?(cell&.piece)
-    @selected_cell&.piece&.update_z_order
+    @selected_cell&.piece&.z = MOVING_PIECE_ORDER
   end
 
   def update_piece_position(pos_x, pos_y)
@@ -48,7 +50,7 @@ class Game
 
     cell.piece = @selected_cell.piece
     cell.piece.update_position(cell.x, cell.y)
-    cell.piece.reset_z_order
+    cell.piece.z = PIECE_ORDER
     @selected_cell.piece = nil
   end
 
@@ -56,7 +58,7 @@ class Game
     return if @selected_cell.nil? || @selected_cell.piece.nil?
 
     @selected_cell.piece.update_position(@selected_cell.x, @selected_cell.y)
-    @selected_cell.piece.reset_z_order
+    @selected_cell.piece.z = PIECE_ORDER
     @selected_cell = nil
   end
 
