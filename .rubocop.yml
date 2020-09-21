@@ -1,0 +1,25 @@
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - chess.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - '**/pieces/create.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - '**/pieces/create.rb'
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+

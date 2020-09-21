@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 module Pieces
   class Base
-    attr_accessor :x, :y
+    attr_accessor :z, :first_move
     attr_reader :color
 
-    def initialize(x, y, color)
-      @x          = x
-      @y          = y
+    def initialize(pos_x, pos_y, color)
+      @x          = pos_x
+      @y          = pos_y
       @z          = 1
+      @first_move = true
       @color      = color
       @image      = Gosu::Image.new("media/pieces/#{@color}/#{name}.png")
     end
@@ -19,12 +22,17 @@ module Pieces
       self.class.name.split('::').last.downcase
     end
 
-    def update_z_order
-      @z = 2
+    def moves
+      []
     end
 
-    def reset_z_order
-      @z = 1
+    def move_in_loop?
+      true
+    end
+
+    def update_position(pos_x, pos_y)
+      @x = pos_x
+      @y = pos_y
     end
   end
 end
