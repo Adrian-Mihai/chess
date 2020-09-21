@@ -28,47 +28,48 @@ class Game
                       end
   end
 
-  def select_cell(pos_x, pos_y)
-    @selected_cell = nil
-    cell = @board.select_cell(pos_x, pos_y)
-    @selected_cell = cell if same_color?(@current_player, cell&.piece)
-    @selected_cell&.piece&.z = MOVING_PIECE_ORDER
+  def select_square(pos_x, pos_y)
+    @selected_square = nil
+    square = @board.select_square(pos_x, pos_y)
+    @selected_square = square if same_color?(@current_player, square&.piece)
+    @selected_square&.piece&.z = MOVING_PIECE_ORDER
   end
 
   def update_piece_position(pos_x, pos_y)
     return unless @board.in_board?(pos_x, pos_y)
 
-    @selected_cell&.piece&.update_position(pos_x - OFFSET_SELECTED_PIECE,
-                                           pos_y - OFFSET_SELECTED_PIECE)
+    @selected_square&.piece&.update_position(pos_x - OFFSET_SELECTED_PIECE,
+                                             pos_y - OFFSET_SELECTED_PIECE)
   end
 
   def move_piece(pos_x, pos_y)
-    return if @selected_cell.nil? || @selected_cell.piece.nil?
+    return if @selected_square.nil? || @selected_square.piece.nil?
 
-    cell = @board.select_cell(pos_x, pos_y)
-    return if cell.nil?
+    square = @board.select_square(pos_x, pos_y)
+    return if square.nil?
 
-    cell.piece = @selected_cell.piece
-    cell.piece.update_position(cell.x, cell.y)
-    cell.piece.z = PIECE_ORDER
-    cell.piece.first_move = false
-    @selected_cell.piece = nil
+    square.piece = @selected_square.piece
+    square.piece.update_position(square.x, square.y)
+    square.piece.z = PIECE_ORDER
+    square.piece.first_move = false
+    @selected_square.piece = nil
   end
 
   def reset_piece_position
-    return if @selected_cell.nil? || @selected_cell.piece.nil?
+    return if @selected_square.nil? || @selected_square.piece.nil?
 
-    @selected_cell.piece.update_position(@selected_cell.x, @selected_cell.y)
-    @selected_cell.piece.z = PIECE_ORDER
-    @selected_cell = nil
+    @selected_square.piece.update_position(@selected_square.x,
+                                           @selected_square.y)
+    @selected_square.piece.z = PIECE_ORDER
+    @selected_square = nil
   end
 
   def move_piece?(pos_x, pos_y)
-    return false unless @selected_cell&.piece
+    return false unless @selected_square&.piece
 
-    cell = @board.select_cell(pos_x, pos_y)
-    return false unless cell
-    return false unless valid_move?(@board, @selected_cell, cell)
+    square = @board.select_square(pos_x, pos_y)
+    return false unless square
+    return false unless valid_move?(@board, @selected_square, square)
 
     true
   end

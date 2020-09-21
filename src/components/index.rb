@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BoardIndex
+class Index
   VERTICAL_VALUE      = %w[8 7 6 5 4 3 2 1].freeze
   HORIZONTAL_VALUE    = %w[A B C D E F G H].freeze
   OFFSET_VERTICAL     = 25
@@ -54,6 +54,6 @@ class BoardIndex
   end
 
   def horizontal_y_value
-    Board::OFFSET_HEIGHT + (Board::ROW_COUNT * Board::CELL_SIZE)
+    Board::OFFSET_HEIGHT + (Board::ROW_COUNT * Board::SQUARE_SIZE)
   end
 end

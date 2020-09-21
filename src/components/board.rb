@@ -2,8 +2,8 @@
 
 require 'matrix'
 
-require_relative 'cell'
-require_relative 'board_index'
+require_relative 'square'
+require_relative 'index'
 
 require_relative 'pieces/create'
 require_relative 'pieces/base'
@@ -15,68 +15,75 @@ require_relative 'pieces/knight'
 require_relative 'pieces/pawn'
 
 class Board
-  attr_reader :cells
+  attr_reader :squares
 
-  OFFSET_WIDTH          = 50
-  OFFSET_HEIGHT         = 50
-  CELL_SIZE             = 50
-  ROW_COUNT             = 8
+  OFFSET_WIDTH  = 50
+  OFFSET_HEIGHT = 50
+  SQUARE_SIZE   = 50
+  ROW_COUNT     = 8
 
   def initialize
-    @cells       = initialize_cells
-    @board_index = BoardIndex.new
+    @squares     = initialize_squares
+    @board_index = Index.new
   end
 
   def draw
     @board_index.draw
-    @cells.each(&:draw)
+    @squares.each(&:draw)
   end
 
   def in_board?(pos_x, pos_y)
-    (OFFSET_WIDTH..((OFFSET_WIDTH * ROW_COUNT) + CELL_SIZE)).include?(pos_x) &&
-      (OFFSET_HEIGHT..((OFFSET_HEIGHT * ROW_COUNT) + CELL_SIZE)).include?(pos_y)
+    horizontal_values.include?(pos_x) && vertical_values.include?(pos_y)
   end
 
-  def select_cell(pos_x, pos_y)
+  def select_square(pos_x, pos_y)
     return unless in_board?(pos_x, pos_y)
 
-    @cells.find { |cell| cell.in_cell?(pos_x, pos_y) }
+    @squares.find { |square| square.in_square?(pos_x, pos_y) }
   end
 
   private
 
-  def initialize_cells
+  def horizontal_values
+    (OFFSET_WIDTH..((OFFSET_WIDTH * ROW_COUNT) + SQUARE_SIZE))
+  end
+
+  def vertical_values
+    (OFFSET_HEIGHT..((OFFSET_HEIGHT * ROW_COUNT) + SQUARE_SIZE))
+  end
+
+  def initialize_squares
     Matrix.build(ROW_COUNT) do |row, col|
-      Cell.new(cell_x_pos(col),
-               cell_y_pos(row),
-               cell_index(row, col),
-               cell_color(col, row),
-               cell_piece(row, col))
+      Square.new(square_x_pos(col),
+                 square_y_pos(row),
+                 square_index(row, col),
+                 square_color(col, row),
+                 square_piece(row, col))
     end
   end
 
-  def cell_x_pos(row)
-    (row * CELL_SIZE) + OFFSET_WIDTH
+  def square_x_pos(row)
+    (row * SQUARE_SIZE) + OFFSET_WIDTH
   end
 
-  def cell_y_pos(col)
-    (col * CELL_SIZE) + OFFSET_HEIGHT
+  def square_y_pos(col)
+    (col * SQUARE_SIZE) + OFFSET_HEIGHT
   end
 
-  def cell_index(row, col)
-    "#{BoardIndex::HORIZONTAL_VALUE[col]}:#{BoardIndex::VERTICAL_VALUE[row]}"
+  def square_index(row, col)
+    "#{Index::HORIZONTAL_VALUE[col]}:#{Index::VERTICAL_VALUE[row]}"
   end
 
-  def cell_color(row, col)
+  def square_color(row, col)
     (row + col).even? ? 'w' : 'b'
   end
 
-  def cell_piece(row, col)
+  def square_piece(row, col)
     return unless [0, 1, 6, 7].include?(row)
 
     piece = Pieces::Create.call(row, col)
-    Pieces.const_get(piece).new(cell_x_pos(col),
-                                cell_y_pos(row),
+    Pieces.const_get(piece).new(square_x_pos(col),
+                                square_y_pos(row),
                                 piece_color(row))
   end
 

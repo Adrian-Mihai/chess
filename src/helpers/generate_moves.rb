@@ -32,7 +32,7 @@ class GenerateMoves
 
     possible_moves = []
     generated_index = GenerateIndex.public_send(move, @index)
-    while vacant_cell?(generated_index)
+    while vacant_square?(generated_index)
       possible_moves << generated_index
       generated_index = GenerateIndex.public_send(move, generated_index)
     end
@@ -44,18 +44,18 @@ class GenerateMoves
     return unless GenerateIndex.respond_to?(move)
 
     generated_index = GenerateIndex.public_send(move, @index)
-    if vacant_cell?(generated_index)
+    if vacant_square?(generated_index)
       generated_index
     else
       different_color?(generated_index) ? generated_index : nil
     end
   end
 
-  def vacant_cell?(index)
+  def vacant_square?(index)
     return false if index.nil?
 
-    new_cell = @board.cells.find { |cell| cell.index == index }
-    return false if new_cell.nil? || new_cell.piece
+    new_square = @board.squares.find { |square| square.index == index }
+    return false if new_square.nil? || new_square.piece
 
     true
   end
@@ -63,7 +63,7 @@ class GenerateMoves
   def different_color?(index)
     return false if index.nil?
 
-    new_cell = @board.cells.find { |cell| cell.index == index }
-    @piece.color != new_cell&.piece&.color
+    new_square = @board.squares.find { |square| square.index == index }
+    @piece.color != new_square&.piece&.color
   end
 end

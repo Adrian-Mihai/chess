@@ -34,7 +34,7 @@ class Chess < Gosu::Window
     when Gosu::MS_LEFT
       return unless in_game?
 
-      @game.select_cell(mouse_x, mouse_y)
+      @game.select_square(mouse_x, mouse_y)
     when Gosu::KB_ESCAPE
       close
     else

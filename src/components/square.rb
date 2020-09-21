@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Cell
+class Square
   attr_accessor :piece
   attr_reader :x, :y, :index
 
@@ -17,8 +17,8 @@ class Cell
     @piece&.draw
   end
 
-  def in_cell?(pos_x, pos_y)
-    (@x..(@x + Board::CELL_SIZE)).include?(pos_x) &&
-      (@y..(@y + Board::CELL_SIZE)).include?(pos_y)
+  def in_square?(pos_x, pos_y)
+    (@x..(@x + Board::SQUARE_SIZE)).include?(pos_x) &&
+      (@y..(@y + Board::SQUARE_SIZE)).include?(pos_y)
   end
 end
