@@ -31,7 +31,7 @@ class Game
   def select_cell(pos_x, pos_y)
     @selected_cell = nil
     cell = @board.select_cell(pos_x, pos_y)
-    @selected_cell = cell if valid_piece?(cell&.piece)
+    @selected_cell = cell if same_color?(@current_player, cell&.piece)
     @selected_cell&.piece&.z = MOVING_PIECE_ORDER
   end
 
@@ -51,6 +51,7 @@ class Game
     cell.piece = @selected_cell.piece
     cell.piece.update_position(cell.x, cell.y)
     cell.piece.z = PIECE_ORDER
+    cell.piece.first_move = false
     @selected_cell.piece = nil
   end
 
@@ -67,20 +68,8 @@ class Game
 
     cell = @board.select_cell(pos_x, pos_y)
     return false unless cell
-    return false unless different_cells?(cell)
-    return false unless valid_move?(current_cell: @selected_cell,
-                                    new_cell: cell)
+    return false unless valid_move?(@board, @selected_cell, cell)
 
     true
-  end
-
-  private
-
-  def valid_piece?(piece)
-    same_color?(player: @current_player, piece: piece)
-  end
-
-  def different_cells?(cell)
-    @selected_cell != cell
   end
 end

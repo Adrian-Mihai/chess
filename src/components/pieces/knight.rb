@@ -6,5 +6,9 @@ module Pieces
       %i[up_up_right up_up_left down_down_right down_down_left
          left_left_up left_left_down right_right_up right_right_down]
     end
+
+    def move_in_loop?
+      false
+    end
   end
 end

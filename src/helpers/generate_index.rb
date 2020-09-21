@@ -52,6 +52,14 @@ class GenerateIndex
       "#{horizontal_com}:#{vertical_com}"
     end
 
+    def up_up(index)
+      up(up(index))
+    end
+
+    def down_down(index)
+      down(down(index))
+    end
+
     def up_right(index)
       right(up(index))
     end

@@ -26,6 +26,10 @@ module Pieces
       []
     end
 
+    def move_in_loop?
+      true
+    end
+
     def update_position(pos_x, pos_y)
       @x = pos_x
       @y = pos_y
